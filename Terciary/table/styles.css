@@ -1,0 +1,71 @@
+body {
+  background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #e6e6e6;
+}
+
+#procesar {
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: linear-gradient(90deg, #00c853, #00e676);
+  border: none;
+  color: #fff;
+}
+
+#procesar:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 20px rgba(0, 230, 118, 0.4);
+}
+
+
+.table {
+  border-radius: 15px;
+  overflow: hidden;
+  background: #1e1e1e;
+  box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.6);
+  color: #e6e6e6;
+}
+
+.table thead {
+  background: linear-gradient(90deg, #673ab7, #512da8);
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+}
+
+.table thead th {
+  text-align: center;
+  padding: 15px;
+  border: none;
+}
+
+.table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background: rgba(103, 58, 183, 0.15);
+}
+
+.table tbody td {
+  vertical-align: middle;
+  text-align: center;
+  padding: 12px;
+  font-size: 0.95rem;
+  border-color: #2c2c2c;
+}
+
+.table img {
+  border-radius: 10px;
+  border: 2px solid #673ab7;
+  background: #2c2c2c;
+  padding: 5px;
+  transition: transform 0.3s ease;
+}
+
+.table img:hover {
+  transform: scale(1.3);
+}
