@@ -1,26 +1,24 @@
-<?php   
+<?php
+require_once "controlador.php";
+require_once "modelo.php";
 
-require_once 'controlador.php';
-require_once 'modelo.php';
-
-class UsuariosAjax{
-
+class UsuariosAjax {
     public $idUsuario;
     public $email;
     public $nombre;
+    public $password;
 
-    public static function mostrarDatos(){
+    public static function mostrarDatos() {
         $result = modeloUsuarios::mostrarDatos();
         echo json_encode($result);
     }
 
-    public function eliminarRegistro(){
-        $valor = $this->idUsuario;
-        $result = modeloUsuarios::eliminarRegistro($valor);
+    public function eliminarRegistro() {
+        $result = modeloUsuarios::eliminarRegistro($this->idUsuario);
         echo json_encode($result);
     }
 
-    public function actualizarRegistro(){
+    public function actualizarRegistro() {
         $valor = [
             "id" => $this->idUsuario,
             "email" => $this->email,
@@ -29,31 +27,51 @@ class UsuariosAjax{
         $result = modeloUsuarios::actualizarRegistro($valor);
         echo json_encode($result);
     }
+
+    public function crearUsuario() {
+        $valor = [
+            "id" => $this->idUsuario,
+            "email" => $this->email,
+            "nombre" => $this->nombre,
+            "password" => password_hash($this->password, PASSWORD_DEFAULT)
+        ];
+        $result = modeloUsuarios::crearUsuario($valor);
+        echo json_encode($result);
+    }
 }
 
-if (isset($_POST['action']) && $_POST['action'] == 'mostrar') {
-    UsuariosAjax::mostrarDatos();
-}
+if (isset($_POST['action'])) {
+    switch ($_POST['action']) {
+        case 'mostrar':
+            UsuariosAjax::mostrarDatos();
+            break;
 
-if (isset($_POST['action']) && $_POST['action'] == 'eliminar') {
-    $usuario = new UsuariosAjax;
-    $usuario->idUsuario = $_POST['id'];
+        case 'eliminar':
+            $usuario = new UsuariosAjax;
+            $usuario->idUsuario = $_POST['id'];
+            $usuario->eliminarRegistro();
+            break;
 
-    $usuario->eliminarRegistro();
-}
+        case 'editar':
+            $result = modeloUsuarios::mostrarRegistro($_POST['id']);
+            echo json_encode($result);
+            break;
 
-if (isset($_POST['action']) && $_POST['action'] == 'editar') {
-  $usuario = new UsuariosAjax;
-  $usuario->idUsuario = $_POST['id'];
-  
-  $result = modeloUsuarios::mostrarRegistro($usuario->idUsuario);
-  echo json_encode($result);
-}
+        case 'actualizar':
+            $usuario = new UsuariosAjax;
+            $usuario->idUsuario = $_POST['id'];
+            $usuario->nombre = $_POST['nombre'];
+            $usuario->email = $_POST['email'];
+            $usuario->actualizarRegistro();
+            break;
 
-if (isset($_POST['action']) && $_POST['action'] == 'guardar') {
-    $usuario = new UsuariosAjax;
-    $usuario->idUsuario = $_POST['id'];
-    $usuario->nombre = $_POST['nombre'];
-    $usuario->email = $_POST['email'];
-    $usuario->actualizarRegistro();
+        case 'crear':
+            $usuario = new UsuariosAjax;
+            $usuario->idUsuario = $_POST['id'] ?? null;
+            $usuario->nombre = $_POST['nombre'];
+            $usuario->email = $_POST['email'];
+            $usuario->password = $_POST['password'];
+            $usuario->crearUsuario();
+            break;
+    }
 }
