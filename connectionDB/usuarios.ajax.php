@@ -1,12 +1,14 @@
 <?php
-require_once "controlador.php";
 require_once "modelo.php";
 
 class UsuariosAjax {
     public $idUsuario;
+    public $document;
     public $email;
     public $nombre;
     public $password;
+    public $status;
+    public $role_id;
 
     public static function mostrarDatos() {
         $result = modeloUsuarios::mostrarDatos();
@@ -21,18 +23,28 @@ class UsuariosAjax {
     public function actualizarRegistro() {
         $valor = [
             "id" => $this->idUsuario,
+            "document" => $this->document,
             "email" => $this->email,
-            "nombre" => $this->nombre
+            "nombre" => $this->nombre,
+            "status" => $this->status,
+            "role_id" => $this->role_id
         ];
+
+        if (!empty($this->password)) {
+            $valor["password"] = password_hash($this->password, PASSWORD_DEFAULT);
+        }
+
         $result = modeloUsuarios::actualizarRegistro($valor);
         echo json_encode($result);
     }
 
-    public function crearUsuario() {
+    public function crearRegistro() {
         $valor = [
-            "id" => $this->idUsuario,
+            "document" => $this->document,
             "email" => $this->email,
             "nombre" => $this->nombre,
+            "status" => $this->status,
+            "role_id" => $this->role_id,
             "password" => password_hash($this->password, PASSWORD_DEFAULT)
         ];
         $result = modeloUsuarios::crearUsuario($valor);
@@ -52,26 +64,27 @@ if (isset($_POST['action'])) {
             $usuario->eliminarRegistro();
             break;
 
-        case 'editar':
-            $result = modeloUsuarios::mostrarRegistro($_POST['id']);
-            echo json_encode($result);
-            break;
-
         case 'actualizar':
             $usuario = new UsuariosAjax;
             $usuario->idUsuario = $_POST['id'];
+            $usuario->document = $_POST['document'];
             $usuario->nombre = $_POST['nombre'];
             $usuario->email = $_POST['email'];
+            $usuario->status = $_POST['status'];
+            $usuario->role_id = $_POST['role_id'];
+            $usuario->password = $_POST['password'] ?? '';
             $usuario->actualizarRegistro();
             break;
 
         case 'crear':
             $usuario = new UsuariosAjax;
-            $usuario->idUsuario = $_POST['id'] ?? null;
+            $usuario->document = $_POST['document'];
             $usuario->nombre = $_POST['nombre'];
             $usuario->email = $_POST['email'];
+            $usuario->status = $_POST['status'];
+            $usuario->role_id = $_POST['role_id'];
             $usuario->password = $_POST['password'];
-            $usuario->crearUsuario();
+            $usuario->crearRegistro();
             break;
     }
 }
